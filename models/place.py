@@ -8,11 +8,11 @@ from os import getenv
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
 
-association_table = Table('place_amenity', base.metadate,
+association_table = Table('place_amenity', Base.metadata,
                           Column('place_id', String(60),
                                  ForeignKey('places.id'),
                                  primary_key=True, nullable=False),
-                          Column('amenities_id', String(60),
+                          Column('amenity_id', String(60),
                                  ForeignKey('amenities.id'),
                                  primary_key=True, nullable=False))
 
@@ -33,7 +33,7 @@ class Place(BaseModel, Base):
     if getenv("HBNB_TYPE_STORAGE") == "db":
         reviews = relationship('Review', backref='place', cascade='delete')
         amenities = relationship('Amenity', secondary='place_amenity',
-                                 viewonly=False)
+                                 overlaps="place_amenities", viewonly=False)
     amenity_ids = []
 
     if getenv("HBNB_TYPE_STORAGE") != "db":
