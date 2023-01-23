@@ -1,20 +1,19 @@
 #!/usr/bin/env bash
 # A script to set up my web servers for the deployment of web_static
 
-apt-get update
-apt-get -y install nginx
-mkdir -p /data/web_static/releases/test/ /data/web_static/shared/
-echo 'Holberton School' > /data/web_static/releases/test/index.html
-ln -sf /data/web_static/releases/test/ /data/web_static/current
-chown -R ubuntu /data/
-chgrp -R ubuntu /data/
-echo '# server config
-server {
-    listen 80;
-
-    location /hbnb_static {
-        root /data/web_static/current/;
-        alias /data/web_static/current/hbnb_static;
-    }
-}' | sudo tee -a /etc/nginx/sites-available/default > /dev/null
-nginx -s reload
+sudo apt-get update -y
+sudo apt-get install nginx -y
+sudo mkdir -p /data/web_static/releases/test/
+sudo mkdir -p /data/web_static/shared/
+sudo echo -e "<html>
+  <head>
+  </head>
+  <body>
+    Holberton School
+  </body>
+</html>" | sudo tee /data/web_static/releases/test/index.html
+sudo ln -sf /data/web_static/releases/test/ /data/web_static/current
+sudo chown -R ubuntu:ubuntu /data/
+update="\\\n\tlocation /hbnb_static {\n\talias /data/web_static/current/;\n\t}"
+sudo sed -i "55i $update" /etc/nginx/sites-available/default
+sudo service nginx restart
