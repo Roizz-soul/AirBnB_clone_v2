@@ -4,7 +4,7 @@
 apt-get update
 apt-get -y install nginx
 mkdir -p /data/web_static/releases/test/ /data/web_static/shared/
-echo 'Hello World!' > /data/web_static/releases/test/index.html
+echo 'Holberton School' > /data/web_static/releases/test/index.html
 ln -sf /data/web_static/releases/test/ /data/web_static/current
 chown -R ubuntu /data/
 chgrp -R ubuntu /data/
