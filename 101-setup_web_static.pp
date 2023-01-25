@@ -13,27 +13,27 @@ $update = "\\\n\tlocation /hbnb_static {\n\talias /data/web_static/current/;\n\t
 package { 'nginx':
 	ensure   => 'present',
 	provider => 'apt'
-} ->
+}
 
 file { '/data/web_static/releases/test':
     ensure  => 'directory',
     recurse => true,
-} ->
+}
 
 file { '/data/web_static/shared':
     ensure  => 'directory',
     recurse => true,
-} ->
+}
 
 file { '/data/web_static/releases/test/index.html':
 	ensure  => 'present',
 	content => ${word},
-} ->
+}
 
 file { '/data/web_static/current':
     ensure => 'link',
     target => '/data/web_static/releases/test'
-} ->
+}
 
 file { '/data':
     ensure  => 'directory',
