@@ -3,12 +3,9 @@
 
 import os.path
 from datetime import datetime
-from fabric.api import env
-from fabric.api import local
-from fabric.api import put
-from fabric.api import run
+from fabric.api import *
 
-env.hosts = ["", ""]
+env.hosts = ["54.82.178.149", "54.160.78.46"]
 
 
 def do_pack():
@@ -43,9 +40,6 @@ def do_deploy(archive_path):
 
 if put(archive_path, "/tmp/{}".format(file)).failed is True:
         return False
-    if run("rm -rf /data/web_static/releases/{}/".
-           format(name)).failed is True:
-        return False
     if run("mkdir -p /data/web_static/releases/{}/".
            format(name)).failed is True:
         return False
@@ -69,7 +63,7 @@ if put(archive_path, "/tmp/{}".format(file)).failed is True:
 
 
 def deploy():
-    """Create and distribute an archive to a web server."""
+    """Create and distribute an archive to web servers"""
     file = do_pack()
     if file is None:
         return False
