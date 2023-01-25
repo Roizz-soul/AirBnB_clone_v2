@@ -2,15 +2,13 @@
 """fabfile that distributes an archive to servers"""
 
 import os.path
-from fabric.api import env
-from fabric.api import put
-from fabric.api import run
+from fabric.api import *
 
-env.hosts = ["", ""]
+env.hosts = ["54.82.178.149", "54.160.78.46"]
 
 
 def do_deploy(archive_path):
-    """Distributes an archive to a web server.
+    """Distributes an archive to my web servers.
     Args:
         archive_path (str): The path of the archive to distribute.
     Returns:
@@ -23,9 +21,6 @@ def do_deploy(archive_path):
     name = file.split(".")[0]
 
     if put(archive_path, "/tmp/{}".format(file)).failed is True:
-        return False
-    if run("rm -rf /data/web_static/releases/{}/".
-           format(name)).failed is True:
         return False
     if run("mkdir -p /data/web_static/releases/{}/".
            format(name)).failed is True:
