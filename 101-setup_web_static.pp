@@ -1,22 +1,49 @@
 # configuring my web servers using puppet
 
-$word = "<html>
+$word = '<html>
   <head>
   </head>
   <body>
     Holberton School
   </body>
-</html>"
-exec { 'Install and configure nginx':
-command  => 'sudo apt-get update -y && 
-            sudo apt-get install nginx -y && 
-            sudo mkdir -p /data/web_static/releases/test/ && 
-            sudo mkdir -p /data/web_static/shared/ && 
-            sudo echo -e ${word} | sudo tee /data/web_static/releases/test/index.html && 
-            sudo ln -sf /data/web_static/releases/test/ /data/web_static/current && 
-            sudo chown -R ubuntu:ubuntu /data/ && 
-            update="\\\n\tlocation /hbnb_static {\n\talias /data/web_static/current/;\n\t}" && 
-            sudo sed -i "55i $update" /etc/nginx/sites-available/default && 
-            sudo service nginx restart'
-provider => shell,
+</html>'
+
+$update = "\\\n\tlocation /hbnb_static {\n\talias /data/web_static/current/;\n\t}"
+
+package { 'nginx':
+	ensure   => 'present',
+	provider => 'apt'
+} ->
+
+file { '/data/web_static/releases/test':
+    ensure  => 'directory',
+    recurse => true,
+} ->
+
+file { '/data/web_static/shared':
+    ensure  => 'directory',
+    recurse => true,
+} ->
+
+file { '/data/web_static/releases/test/index.html':
+	ensure  => 'present',
+	content => ${word},
+} ->
+
+file { '/data/web_static/current':
+    ensure => 'link',
+    target => '/data/web_static/releases/test'
+} ->
+
+file { '/data':
+    ensure  => 'directory',
+    owner   => 'ubuntu',
+    group   => 'ubuntu',
+    recurse => true,
+}
+
+exec { 'configure and restart nginx':
+    command => 'sudo sed -i "55i $update" /etc/nginx/sites-available/default && 
+                sudo service nginx restart',
+    provider => shell,
 }
